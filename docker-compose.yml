@@ -1,19 +1,19 @@
 nginx:
-  container_name: nginx
+  container_name: slact_nginx
   links:
     - go
   ports:
-    - 80
-    - 443
+    - 80:80
+    - 443:443
   dns: 8.8.8.8
   build: ./docker/nginx
 go:
-  container_name: go
+  container_name: slact_go
   dns: 8.8.8.8
-  build: ./docker/go
+  build: .
   expose:
     - 3000
   env_file:
     - .env
-  env:
+  environment:
     - DEV_RUNNER=0

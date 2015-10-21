@@ -27,3 +27,7 @@ tmp
 .env
 
 slact
+
+
+ssl.crt
+ssl.key
