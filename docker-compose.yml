@@ -1,0 +1,19 @@
+nginx:
+  container_name: nginx
+  links:
+    - go
+  ports:
+    - 80
+    - 443
+  dns: 8.8.8.8
+  build: ./docker/nginx
+go:
+  container_name: go
+  dns: 8.8.8.8
+  build: ./docker/go
+  expose:
+    - 3000
+  env_file:
+    - .env
+  env:
+    - DEV_RUNNER=0
