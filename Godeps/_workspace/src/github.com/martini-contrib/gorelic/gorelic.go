@@ -3,8 +3,8 @@ package gorelic
 import (
 	"fmt"
 	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/go-martini/martini"
-	metrics "github.com/bjacobel/slact/Godeps/_workspace/src/github.com/yvasiyarov/go-metrics"
-	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/yvasiyarov/gorelic"
+	metrics "github.com/yvasiyarov/go-metrics"
+	"github.com/yvasiyarov/gorelic"
 	"time"
 )
 

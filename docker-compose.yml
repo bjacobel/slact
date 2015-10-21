@@ -16,4 +16,4 @@ go:
   env_file:
     - .env
   environment:
-    - DEV_RUNNER=0
+    - DEV=0

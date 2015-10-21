@@ -7,21 +7,6 @@
 			"Rev": "6acbf34bdab1cc0b6a8e03029952b2a7c44610bc"
 		},
 		{
-			"ImportPath": "github.com/codegangsta/inject",
-			"Comment": "v1.0-rc1-10-g33e0aa1",
-			"Rev": "33e0aa1cb7c019ccc3fbe049a8262a6403d30504"
-		},
-		{
-			"ImportPath": "github.com/codegangsta/martini",
-			"Comment": "v1.0-166-g9987fc5",
-			"Rev": "9987fc59f060a063247d22472c2fb48654bac5f6"
-		},
-		{
-			"ImportPath": "github.com/codegangsta/martini-contrib/render",
-			"Comment": "v0.1-159-g8ce6181",
-			"Rev": "8ce6181c2609699e4c7cd30994b76a850a9cdadc"
-		},
-		{
 			"ImportPath": "github.com/davecgh/go-spew/spew",
 			"Rev": "2df174808ee097f90d259e432cc04442cf60be21"
 		},
@@ -36,21 +21,16 @@
 			"Rev": "4ed13390c0acd2ff4e371e64d8b97c8954138243"
 		},
 		{
+			"ImportPath": "github.com/martini-contrib/binding",
+			"Rev": "8aaceec3b52c275477f32c95ea5c6e8ccaba04c5"
+		},
+		{
 			"ImportPath": "github.com/martini-contrib/gorelic",
 			"Rev": "f8b0843aa3ab66d8734aa7d9acf399bdc197c65d"
 		},
 		{
-			"ImportPath": "github.com/yvasiyarov/go-metrics",
-			"Rev": "c25f46c4b94079672242ec48a545e7ca9ebe3aec"
-		},
-		{
-			"ImportPath": "github.com/yvasiyarov/gorelic",
-			"Comment": "v0.0.6-36-gb960e98",
-			"Rev": "b960e980d682781c1baddf156bf00c81a022d769"
-		},
-		{
-			"ImportPath": "github.com/yvasiyarov/newrelic_platform_go",
-			"Rev": "db03d6dfd965ebc22dbfd910567c641b326ff055"
+			"ImportPath": "github.com/martini-contrib/render",
+			"Rev": "ec18f8345a1181146728238980606fb1d6f40e8c"
 		}
 	]
 }
