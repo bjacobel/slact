@@ -11,7 +11,5 @@ go:
   container_name: slact_go
   dns: 8.8.8.8
   build: .
-  expose:
-    - 3000
   env_file:
     - .env
