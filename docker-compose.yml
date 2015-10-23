@@ -15,5 +15,3 @@ go:
     - 3000
   env_file:
     - .env
-  environment:
-    - DEV=0
