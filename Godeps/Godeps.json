@@ -3,17 +3,8 @@
 	"GoVersion": "go1.5.1",
 	"Deps": [
 		{
-			"ImportPath": "github.com/bjacobel/fresh/runner/runnerutils",
-			"Rev": "6acbf34bdab1cc0b6a8e03029952b2a7c44610bc"
-		},
-		{
 			"ImportPath": "github.com/davecgh/go-spew/spew",
 			"Rev": "2df174808ee097f90d259e432cc04442cf60be21"
-		},
-		{
-			"ImportPath": "github.com/go-martini/martini",
-			"Comment": "v1.0-166-g9987fc5",
-			"Rev": "9987fc59f060a063247d22472c2fb48654bac5f6"
 		},
 		{
 			"ImportPath": "github.com/joho/godotenv",
@@ -21,16 +12,13 @@
 			"Rev": "4ed13390c0acd2ff4e371e64d8b97c8954138243"
 		},
 		{
-			"ImportPath": "github.com/martini-contrib/binding",
-			"Rev": "8aaceec3b52c275477f32c95ea5c6e8ccaba04c5"
+			"ImportPath": "github.com/nlopes/slack",
+			"Comment": "v0.0.1-65-g4a9ff5f",
+			"Rev": "4a9ff5f6ed8bb0df51620f49ee90fc0858a2913e"
 		},
 		{
-			"ImportPath": "github.com/martini-contrib/gorelic",
-			"Rev": "f8b0843aa3ab66d8734aa7d9acf399bdc197c65d"
-		},
-		{
-			"ImportPath": "github.com/martini-contrib/render",
-			"Rev": "ec18f8345a1181146728238980606fb1d6f40e8c"
+			"ImportPath": "golang.org/x/net/websocket",
+			"Rev": "2cba614e8ff920c60240d2677bc019af32ee04e5"
 		}
 	]
 }
