@@ -6,6 +6,3 @@ COPY ./ssl.crt /etc/ssl/server.crt
 
 COPY ./nginx.conf /etc/nginx/nginx.conf
 COPY ./slact.conf /etc/nginx/conf.d/slact.conf
-
-EXPOSE 80
-EXPOSE 443

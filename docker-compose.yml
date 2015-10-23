@@ -3,13 +3,13 @@ nginx:
   links:
     - go
   ports:
-    - 80:80
-    - 443:443
-  dns: 8.8.8.8
+    - "80:80"
+    - "443:443"
   build: ./docker/nginx
 go:
   container_name: slact_go
-  dns: 8.8.8.8
   build: .
+  expose:
+    - "3000"
   env_file:
     - .env

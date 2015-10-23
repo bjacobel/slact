@@ -5,5 +5,3 @@ ADD . /go/src/github.com/bjacobel/slact
 RUN go install github.com/bjacobel/slact
 
 ENTRYPOINT /go/bin/slact
-
-EXPOSE 3000

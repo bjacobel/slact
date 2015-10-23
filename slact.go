@@ -21,7 +21,7 @@ func main() {
 	// load .env into os.Getenv
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err)
+		log.Println("No .env, running in production mode, hope that's what you wanted")
 	}
 
 	// Slack API client
