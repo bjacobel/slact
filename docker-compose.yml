@@ -13,3 +13,10 @@ go:
     - "3000"
   env_file:
     - .env
+  environment:
+    - MGHOST=mongo
+  links:
+    - mongo
+mongo:
+  container_name: slact_mongo
+  image: mongo/3.2

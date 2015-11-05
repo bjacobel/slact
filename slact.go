@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
+
+	"gopkg.in/mgo.v2"
 
 	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/davecgh/go-spew/spew"
 	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/go-martini/martini"
@@ -24,6 +27,27 @@ func main() {
 		log.Println("No .env, running in production mode, hope that's what you wanted")
 	}
 
+	creds := ""
+
+	if os.Getenv("MGUSER") != "" && os.Getenv("MGPW") != "" {
+		creds = fmt.Sprintf("%s:%s@", os.Getenv("MGUSER"), os.Getenv("MGPW"))
+	}
+
+	// connect to a mongodb session - local or through Docker
+	session, err := mgo.DialWithTimeout(
+		fmt.Sprintf("mongodb://%s%s/%s", creds, os.Getenv("MGHOST"), os.Getenv("MGDB")),
+		time.Second,
+	)
+
+	if err == nil {
+		defer session.Close()
+		session.SetMode(mgo.Monotonic, true)
+	} else {
+		log.Fatal(err)
+	}
+
+	db := session.Clone().DB(os.Getenv("MGDB")).C(os.Getenv("MGCOLL"))
+
 	// Slack API client
 	api := slack.New(os.Getenv("SLACK"))
 
@@ -42,7 +66,7 @@ func main() {
 		})
 	})
 
-	app.Run()
+	go app.Run()
 
 	for {
 		select {
@@ -50,7 +74,11 @@ func main() {
 			switch msg.Data.(type) {
 
 			case *slack.ReactionAddedEvent:
-				go handleReaction(msg.Data.(*slack.ReactionAddedEvent), rtm)
+				// log.Println("ReactionAddedEvent")
+				go insertReaction(msg.Data.(*slack.ReactionAddedEvent), db)
+			case *slack.ReactionRemovedEvent:
+				// log.Println("ReactionRemovedEvent")
+				go deleteReaction(msg.Data.(*slack.ReactionRemovedEvent), db)
 			default:
 				continue
 			}
@@ -58,11 +86,19 @@ func main() {
 	}
 }
 
-func handleReaction(reaction *slack.ReactionAddedEvent, rtm *slack.RTM) {
-	rtm.SendMessage(
-		rtm.NewOutgoingMessage(
-			fmt.Sprintf("New reaction added :%s:", reaction.Reaction),
-			reaction.Item.Item.Channel,
-		),
-	)
+func insertReaction(reax *slack.ReactionAddedEvent, db *mgo.Collection) {
+	db.Insert(&reax)
+	log.Printf("Added reaction %s\n", reax.Reaction)
+	go reactionCount(db)
+}
+
+func deleteReaction(reax *slack.ReactionRemovedEvent, db *mgo.Collection) {
+	db.Remove(&reax)
+	log.Printf("Removed reaction %s\n", reax.Reaction)
+	go reactionCount(db)
+}
+
+func reactionCount(db *mgo.Collection) {
+	count, _ := db.Count()
+	log.Printf("Collection count is now %d\n", count)
 }
