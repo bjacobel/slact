@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 
 	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/davecgh/go-spew/spew"
 	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/go-martini/martini"
@@ -62,7 +63,38 @@ func main() {
 	// expose Martini endpoints for our data
 	app.Group("/", func(r martini.Router) {
 		r.Get("reactions", func(r render.Render) {
-			r.JSON(200, nil)
+			var result []bson.M
+
+			pipe := db.Pipe(
+				[]bson.M{
+					{
+						"$sort": bson.M{"eventtimestamp": 1},
+					},
+					{
+						"$group": bson.M{
+							"_id": "$reaction",
+							"reactions": bson.M{
+								"$push": "$$CURRENT",
+							},
+							"count": bson.M{"$sum": 1},
+						},
+					},
+					{
+						"$sort": bson.M{"count": -1},
+					},
+				},
+			)
+
+			iter := pipe.Iter()
+			err := iter.All(&result)
+
+			if err != nil {
+				log.Println(err.Error())
+				r.JSON(400, bson.M{"error": err.Error()})
+			} else {
+				r.JSON(200, result)
+			}
+
 		})
 	})
 
@@ -74,10 +106,8 @@ func main() {
 			switch msg.Data.(type) {
 
 			case *slack.ReactionAddedEvent:
-				// log.Println("ReactionAddedEvent")
 				go insertReaction(msg.Data.(*slack.ReactionAddedEvent), db)
 			case *slack.ReactionRemovedEvent:
-				// log.Println("ReactionRemovedEvent")
 				go deleteReaction(msg.Data.(*slack.ReactionRemovedEvent), db)
 			default:
 				continue
@@ -88,17 +118,15 @@ func main() {
 
 func insertReaction(reax *slack.ReactionAddedEvent, db *mgo.Collection) {
 	db.Insert(&reax)
-	log.Printf("Added reaction %s\n", reax.Reaction)
-	go reactionCount(db)
+	// log.Printf("Added reaction %s\n", reax.Reaction)
 }
 
 func deleteReaction(reax *slack.ReactionRemovedEvent, db *mgo.Collection) {
-	db.Remove(&reax)
-	log.Printf("Removed reaction %s\n", reax.Reaction)
-	go reactionCount(db)
-}
+	err := db.Remove(bson.M{"user": reax.User, "item.item.timestamp": reax.Item.Item.Timestamp})
 
-func reactionCount(db *mgo.Collection) {
-	count, _ := db.Count()
-	log.Printf("Collection count is now %d\n", count)
+	if err != nil {
+		return
+	}
+
+	log.Println("Could not find right object to delete. Not a huge deal.")
 }
