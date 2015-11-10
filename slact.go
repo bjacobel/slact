@@ -6,14 +6,13 @@ import (
 	"os"
 	"time"
 
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
-
 	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/davecgh/go-spew/spew"
 	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/go-martini/martini"
 	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/joho/godotenv"
 	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/martini-contrib/render"
 	"github.com/bjacobel/slact/Godeps/_workspace/src/github.com/nlopes/slack"
+	"github.com/bjacobel/slact/Godeps/_workspace/src/gopkg.in/mgo.v2"
+	"github.com/bjacobel/slact/Godeps/_workspace/src/gopkg.in/mgo.v2/bson"
 )
 
 var spw = spew.NewDefaultConfig()

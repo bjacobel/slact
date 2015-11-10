@@ -37,6 +37,11 @@
 		{
 			"ImportPath": "golang.org/x/net/websocket",
 			"Rev": "2cba614e8ff920c60240d2677bc019af32ee04e5"
+		},
+		{
+			"ImportPath": "gopkg.in/mgo.v2",
+			"Comment": "r2015.10.05-1-g4d04138",
+			"Rev": "4d04138ffef2791c479c0c8bbffc30b34081b8d9"
 		}
 	]
 }
