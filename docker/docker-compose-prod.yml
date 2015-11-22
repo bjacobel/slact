@@ -1,0 +1,15 @@
+nginx:
+  image: bjacobel/nginx_slact:latest
+  links:
+    - go
+  ports:
+    - "80:80"
+    - "443:443"
+go:
+  image: bjacobel/slact_go:latest
+  environment:
+    - MGHOST=mongo
+  links:
+    - mongo
+mongo:
+  image: mongo:3.2

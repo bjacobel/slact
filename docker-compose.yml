@@ -1,5 +1,7 @@
 nginx:
   container_name: slact_nginx
+  labels:
+    app: slact
   links:
     - go
   ports:
@@ -8,6 +10,8 @@ nginx:
   build: ./docker/nginx
 go:
   container_name: slact_go
+  labels:
+    app: slact
   build: .
   expose:
     - "3000"
@@ -19,4 +23,6 @@ go:
     - mongo
 mongo:
   container_name: slact_mongo
-  image: mongo/3.2
+  labels:
+    app: slact
+  image: mongo:3.2
