@@ -54,9 +54,6 @@ ecs-cli up \
   --subnets $USEAST1B_SUBNET,$USEAST1C_SUBNET \
   --security-group $SG
 
-# If the cluster does exist, make sure it is scaled to 1 host
-ecs-cli scale --capability-iam --size 1
-
 # Push to ECS and bring the containers up
 ecs-cli compose \
   --verbose \
