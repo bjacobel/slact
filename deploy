@@ -27,15 +27,20 @@ ecs-cli configure \
 VPC=$(aws --profile bjacobel ec2 describe-vpcs \
   | jq -r '.Vpcs[0].VpcId')
 
-SUBNETS=$(aws ec2 --profile bjacobel describe-subnets \
+USEAST1B_SUBNET=$(aws ec2 --profile bjacobel describe-subnets \
   --filters Name=vpc-id,Values=$VPC \
-  | jq -r '.Subnets[].SubnetId' \
-  | tr -s '\n' ',')
+  --filters Name=availability-zone,Values=us-east-1c \
+  | jq -r '.Subnets[0].SubnetId')
 
-AZS=$(aws ec2 --profile bjacobel describe-subnets \
+USEAST1C_SUBNET=$(aws ec2 --profile bjacobel describe-subnets \
   --filters Name=vpc-id,Values=$VPC \
-  | jq -r '.Subnets[].AvailabilityZone' \
-  | tr -s '\n' ',')
+  --filters Name=availability-zone,Values=us-east-1c \
+  | jq -r '.Subnets[0].SubnetId')
+
+# AZS=$(aws ec2 --profile bjacobel describe-subnets \
+#   --filters Name=vpc-id,Values=$VPC \
+#   | jq -r '.Subnets[].AvailabilityZone' \
+#   | tr -s '\n' ',')
 
 SG=$(aws --profile bjacobel ec2 describe-security-groups \
   --filters Name=vpc-id,Values=$VPC \
@@ -50,8 +55,8 @@ ecs-cli up \
   --size 1 \
   --instance-type t2.micro \
   --vpc $VPC \
-  --subnets $SUBNETS \
-  --azs $AZS \
+  --azs us-east-1b,us-east-1c \
+  --subnets $USEAST1B_SUBNET,$USEAST1C_SUBNET \
   --security-group $SG
 
 # ecs-cli scale \
