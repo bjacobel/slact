@@ -1,20 +1,69 @@
-#!/bin/sh
+#!/bin/bash
 
+# Connect docker-compose to boot2docker
+eval "$(docker-machine env default)"
+
+# By default the boot2docker vm docker-machine sets up wants to use
+# corp.localytics.com resolvers which I can't get at home
+docker-machine ssh default "echo nameserver 8.8.8.8 > /etc/resolv.conf"
+
+# Build the containers
 docker-compose build
 
-docker tag slact_go bjacobel/slact_go:latest
-docker push bjacobel/slact_go
+# Tag containers with :latest for pushing; push to Docker Hub
+docker tag -f slact_go bjacobel/slact_go:latest
+docker push slact_go bjacobel/slact_go
 
-docker tag slact_nginx bjacobel/slact_nginx:latest
+docker tag -f slact_nginx bjacobel/slact_nginx:latest
 docker push slact_nginx bjacobel/slact_nginx
 
+# Tell ECS who I am and what cluster to use
 ecs-cli configure \
-  --region us-east-1
-  --profile bjacobel
+  --region us-east-1 \
+  --profile bjacobel \
   --cluster slact
 
+# Get the name of my security group, my active AZs, my VPC and its subnets. Requires jq
+VPC=$(aws --profile bjacobel ec2 describe-vpcs \
+  | jq -r '.Vpcs[0].VpcId')
+
+SUBNETS=$(aws ec2 --profile bjacobel describe-subnets \
+  --filters Name=vpc-id,Values=$VPC \
+  | jq -r '.Subnets[].SubnetId' \
+  | tr -s '\n' ',')
+
+AZS=$(aws ec2 --profile bjacobel describe-subnets \
+  --filters Name=vpc-id,Values=$VPC \
+  | jq -r '.Subnets[].AvailabilityZone' \
+  | tr -s '\n' ',')
+
+SG=$(aws --profile bjacobel ec2 describe-security-groups \
+  --filters Name=vpc-id,Values=$VPC \
+  --filters Name=ip-permission.protocol,Values=tcp \
+  --filters Name=ip-permission.from-port,Values=80,443 \
+  | jq -r '.SecurityGroups[0].GroupId')
+
+# Spin up an ECS cluster if one doesn't already exist
+ecs-cli up \
+  --capability-iam \
+  --keypair ecs \
+  --size 1 \
+  --instance-type t2.micro \
+  --vpc $VPC \
+  --subnets $SUBNETS \
+  --azs $AZS \
+  --security-group $SG
+
+# ecs-cli scale \
+#   --capability-iam \
+#   --size 1
+
+# Push to ECS and bring the containers up
 ecs-cli compose \
   --verbose \
   --file docker/docker-compose-prod.yml \
   --project-name slact \
   up
+
+# Check status
+ecs-cli compose ps
