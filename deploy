@@ -29,18 +29,13 @@ VPC=$(aws --profile bjacobel ec2 describe-vpcs \
 
 USEAST1B_SUBNET=$(aws ec2 --profile bjacobel describe-subnets \
   --filters Name=vpc-id,Values=$VPC \
-  --filters Name=availability-zone,Values=us-east-1c \
+  --filters Name=availability-zone,Values=us-east-1b \
   | jq -r '.Subnets[0].SubnetId')
 
 USEAST1C_SUBNET=$(aws ec2 --profile bjacobel describe-subnets \
   --filters Name=vpc-id,Values=$VPC \
   --filters Name=availability-zone,Values=us-east-1c \
   | jq -r '.Subnets[0].SubnetId')
-
-# AZS=$(aws ec2 --profile bjacobel describe-subnets \
-#   --filters Name=vpc-id,Values=$VPC \
-#   | jq -r '.Subnets[].AvailabilityZone' \
-#   | tr -s '\n' ',')
 
 SG=$(aws --profile bjacobel ec2 describe-security-groups \
   --filters Name=vpc-id,Values=$VPC \
@@ -59,16 +54,11 @@ ecs-cli up \
   --subnets $USEAST1B_SUBNET,$USEAST1C_SUBNET \
   --security-group $SG
 
-# ecs-cli scale \
-#   --capability-iam \
-#   --size 1
+# If the cluster does exist, make sure it is scaled to 1 host
+ecs-cli scale --capability-iam --size 1
 
 # Push to ECS and bring the containers up
 ecs-cli compose \
   --verbose \
   --file docker/docker-compose-prod.yml \
-  --project-name slact \
   up
-
-# Check status
-ecs-cli compose ps
