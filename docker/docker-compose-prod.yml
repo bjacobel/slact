@@ -1,11 +1,16 @@
 nginx:
-  image: bjacobel/nginx_slact:latest
+  image: bjacobel/slact_nginx:latest
   links:
     - go
   ports:
     - "80:80"
     - "443:443"
   mem_limit: 128000000
+  log_driver: awslogs
+  log_opt:
+    awslogs-region: us-east-1
+    awslogs-group: slact
+    awslogs-stream: slact-nginx
 go:
   image: bjacobel/slact_go:latest
   environment:
@@ -13,6 +18,16 @@ go:
   links:
     - mongo
   mem_limit: 64000000
+  log_driver: awslogs
+  log_opt:
+    awslogs-region: us-east-1
+    awslogs-group: slact
+    awslogs-stream: slact-go
 mongo:
   image: mongo:3.2
   mem_limit: 128000000
+  log_driver: awslogs
+  log_opt:
+    awslogs-region: us-east-1
+    awslogs-group: slact
+    awslogs-stream: slact-mongo
