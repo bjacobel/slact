@@ -1,5 +1,7 @@
 #!/bin/bash
 
+docker-machine start default
+
 # Connect docker-compose to boot2docker
 eval "$(docker-machine env default)"
 
@@ -62,8 +64,9 @@ command -v /usr/local/Cellar/gettext/0.19.6/bin/gettext >/dev/null 2>&1 || { bre
 
 # Push to ECS and bring the containers up
 ecs-cli compose \
+  --project-name slact \
   --file docker/docker-compose-prod.tmp.yml \
-  up
+  service up
 
 # Remove the config file with secrets in it
 rm docker/docker-compose-prod.tmp.yml
