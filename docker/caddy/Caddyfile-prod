@@ -1,8 +1,4 @@
-http://slact.bjacobel.com {
-  redir https://slact.bjacobel.com{uri} 301
-}
-
-https://slact.bjacobel.com {
+slact.bjacobel.com {
   gzip
   tls bjacobel@gmail.com
   proxy / go:3000
