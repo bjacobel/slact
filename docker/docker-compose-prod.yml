@@ -1,13 +1,18 @@
-nginx:
-  image: bjacobel/slact_nginx:latest
+caddy:
+  image: jumanjiman/caddy:latest
   links:
     - go
   ports:
-    - "80:80"
-    - "443:443"
+    - 80:80
+    - 443:443
+  volumes:
+    - ./caddy:/etc/caddy
+  command: -conf /etc/caddy/Caddyfile-prod
   mem_limit: 128000000
 go:
   image: bjacobel/slact_go:latest
+  links:
+    - mongo
   environment:
     - MGHOST=${MGHOST}
     - MGDB=${MGDB}
@@ -15,9 +20,8 @@ go:
     - MGPW=${MGPW}
     - MGUSER=${MGUSER}
     - SLACK=${SLACK}
-  links:
-    - mongo
   mem_limit: 64000000
 mongo:
+  command: --quiet
   image: mongo:3.2
   mem_limit: 128000000

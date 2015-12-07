@@ -14,9 +14,6 @@ docker-compose build
 docker tag -f slact_go bjacobel/slact_go:latest
 docker push bjacobel/slact_go
 
-docker tag -f slact_nginx bjacobel/slact_nginx:latest
-docker push bjacobel/slact_nginx
-
 # Tell ECS who I am and what cluster to use
 ecs-cli configure \
   --region us-east-1 \

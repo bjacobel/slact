@@ -1,28 +1,31 @@
-nginx:
-  container_name: slact_nginx
-  labels:
-    app: slact
+caddy:
+  image: jumanjiman/caddy:latest
   links:
     - go
   ports:
-    - "80:80"
-    - "443:443"
-  build: ./docker/nginx
-go:
-  container_name: slact_go
+    - 80:80
+  volumes:
+    - ./docker/caddy:/etc/caddy
+  command: -conf /etc/caddy/Caddyfile
+  container_name: slact_caddy
   labels:
     app: slact
+go:
   build: .
+  links:
+    - mongo
   expose:
-    - "3000"
+    - 3000
   env_file:
     - .env
   environment:
     - MGHOST=mongo
-  links:
-    - mongo
+  container_name: slact_go
+  labels:
+    app: slact
 mongo:
+  image: mongo:3.2
+  command: --quiet
   container_name: slact_mongo
   labels:
     app: slact
-  image: mongo:3.2
