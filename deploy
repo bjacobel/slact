@@ -54,8 +54,16 @@ ecs-cli up \
   --subnets $USEAST1B_SUBNET,$USEAST1C_SUBNET \
   --security-group $SG
 
+# Template a config file with secrets from .env
+export $(cat .env)
+brew install https://raw.githubusercontent.com/Homebrew/homebrew/8fc48e88e959848be4e7edc8528092634603956b/Library/Formula/gettext.rb
+/usr/local/Cellar/gettext/0.19.6/bin/envsubst < docker/docker-compose-prod.yml > docker/docker-compose-prod.tmp.yml
+
 # Push to ECS and bring the containers up
 ecs-cli compose \
   --verbose \
-  --file docker/docker-compose-prod.yml \
+  --file docker/docker-compose-prod.tmp.yml \
   up
+
+# Remove the config file with secrets in it
+rm docker/docker-compose-prod.tmp.yml

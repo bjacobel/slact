@@ -31,3 +31,5 @@ slact
 
 ssl.crt
 ssl.key
+
+*.tmp.yml
