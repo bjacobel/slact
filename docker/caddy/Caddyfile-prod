@@ -1,4 +1,4 @@
-:80 {
+http://slact.bjacobel.com {
   redir https://slact.bjacobel.com{uri} 301
 }
 

@@ -1,12 +1,9 @@
 caddy:
-  image: jumanjiman/caddy:latest
+  build: ./docker/caddy
   links:
     - go
   ports:
-    - 80:80
-  volumes:
-    - ./docker/caddy:/etc/caddy
-  command: -conf /etc/caddy/Caddyfile
+    - "80:80"
   container_name: slact_caddy
   labels:
     app: slact
@@ -25,7 +22,7 @@ go:
     app: slact
 mongo:
   image: mongo:3.2
-  command: --quiet
+  command: "--quiet"
   container_name: slact_mongo
   labels:
     app: slact

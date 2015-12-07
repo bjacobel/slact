@@ -1,13 +1,11 @@
 caddy:
-  image: jumanjiman/caddy:latest
+  image: bjacobel/slact_caddy:latest
   links:
     - go
   ports:
-    - 80:80
-    - 443:443
-  volumes:
-    - ./caddy:/etc/caddy
-  command: -conf /etc/caddy/Caddyfile-prod
+    - "80:80"
+    - "443:443"
+  command: "--conf=/etc/caddy/Caddyfile-prod"
   mem_limit: 128000000
 go:
   image: bjacobel/slact_go:latest
@@ -22,6 +20,6 @@ go:
     - SLACK=${SLACK}
   mem_limit: 64000000
 mongo:
-  command: --quiet
+  command: "--quiet"
   image: mongo:3.2
   mem_limit: 128000000

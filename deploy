@@ -7,12 +7,15 @@ eval "$(docker-machine env default)"
 # corp.localytics.com resolvers which I can't get at home
 docker-machine ssh default "echo nameserver 8.8.8.8 > /etc/resolv.conf"
 
-# Build the containers
+# Build the containers that are not pulled images
 docker-compose build
 
 # Tag containers with :latest for pushing; push to Docker Hub
 docker tag -f slact_go bjacobel/slact_go:latest
 docker push bjacobel/slact_go
+
+docker tag -f slact_caddy bjacobel/slact_caddy:latest
+docker push bjacobel/slact_caddy
 
 # Tell ECS who I am and what cluster to use
 ecs-cli configure \
@@ -49,16 +52,16 @@ ecs-cli up \
   --vpc $VPC \
   --azs us-east-1b,us-east-1c \
   --subnets $USEAST1B_SUBNET,$USEAST1C_SUBNET \
-  --security-group $SG
+  --security-group $SG \
+|| { echo "ECS cluster already exists, or something awful happened."; }
 
 # Template a config file with secrets from .env
 export $(cat .env)
-brew install https://raw.githubusercontent.com/Homebrew/homebrew/8fc48e88e959848be4e7edc8528092634603956b/Library/Formula/gettext.rb
+command -v /usr/local/Cellar/gettext/0.19.6/bin/gettext >/dev/null 2>&1 || { brew install https://raw.githubusercontent.com/Homebrew/homebrew/8fc48e88e959848be4e7edc8528092634603956b/Library/Formula/gettext.rb; }
 /usr/local/Cellar/gettext/0.19.6/bin/envsubst < docker/docker-compose-prod.yml > docker/docker-compose-prod.tmp.yml
 
 # Push to ECS and bring the containers up
 ecs-cli compose \
-  --verbose \
   --file docker/docker-compose-prod.tmp.yml \
   up
 
